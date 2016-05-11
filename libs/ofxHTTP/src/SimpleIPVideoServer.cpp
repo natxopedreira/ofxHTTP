@@ -41,7 +41,7 @@ SimpleIPVideoServer::SimpleIPVideoServer(const Settings& settings):
     addRoute(&_ipVideoRoute);
 }
 
-
+    
 SimpleIPVideoServer::~SimpleIPVideoServer()
 {
     removeRoute(&_ipVideoRoute);
@@ -49,6 +49,10 @@ SimpleIPVideoServer::~SimpleIPVideoServer()
     removeRoute(&_fileSystemRoute);
 }
 
+    
+void SimpleIPVideoServer::send(char* buf, unsigned int bufsize){
+        _ipVideoRoute.send(buf, bufsize);
+}
 
 void SimpleIPVideoServer::setup(const Settings& settings)
 {

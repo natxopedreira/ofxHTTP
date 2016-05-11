@@ -66,6 +66,8 @@ public:
     bool empty() const;
 
     void clear();
+    
+    
 
 private:
     std::deque<std::shared_ptr<IPVideoFrame>> _frames;
@@ -160,6 +162,7 @@ public:
     Poco::Net::HTTPRequestHandler* createRequestHandler(const Poco::Net::HTTPServerRequest& request) override;
 
     void send(ofPixels& pix) const;
+    void send(char * buf, unsigned int bufsize);
 
     void addConnection(IPVideoRouteHandler* handler);
 
@@ -168,7 +171,7 @@ public:
     std::size_t getNumConnections() const;
 
     virtual void stop() override;
-
+    
 protected:
     typedef std::vector<IPVideoRouteHandler*> Connections;
 

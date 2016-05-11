@@ -257,6 +257,45 @@ Poco::Net::HTTPRequestHandler* IPVideoRoute::createRequestHandler(const Poco::Ne
 }
 
 
+void IPVideoRoute::IPVideoRoute::send(char* buf, unsigned int bufsize){
+    if(bufsize){
+        unsigned long long timestamp = ofGetElapsedTimeMillis();
+        ofBuffer compressedPixels;
+        
+        // TODO: turbo jpeg an option here?
+        //ofScopedLock lock(_mutex);
+        std::unique_lock<std::mutex> lock(_mutex);
+        
+        Connections::const_iterator iter = _connections.begin();
+        //ConnectionsIter iter = _connections.begin();
+        
+        IPVideoFrameSettings settings;
+        
+        compressedPixels.append(buf, bufsize);
+        
+        std::shared_ptr<IPVideoFrame> frame = std::make_shared<IPVideoFrame>(settings, timestamp, compressedPixels);
+        //IPVideoFrame::SharedPtr frame = IPVideoFrame::makeShared(settings, timestamp, compressedPixels);
+        
+            while(iter != _connections.end())
+            {
+                if(*iter)
+                {
+                    (*iter)->push(frame);
+                }
+                else
+                {
+                    ofLogError("IPVideoRoute::send") << "Found a NULL IPVideoRouteHandler*. This should not happen.";
+                }
+                ++iter;
+            }
+            
+        } else {
+            ofLogError("ofxIpVideoServerRoute::pushFrame") << "Pushing unallocated pixels.";
+        }
+    }
+    
+    
+    
 void IPVideoRoute::send(ofPixels& pix) const
 {
     if (pix.isAllocated())

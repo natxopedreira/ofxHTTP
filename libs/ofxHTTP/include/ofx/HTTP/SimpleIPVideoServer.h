@@ -57,6 +57,7 @@ public:
     virtual void setup(const Settings& settings);
 
     void send(ofPixels& pix);
+    void send (char * buf, unsigned int bufsize);
 
     std::size_t getNumConnections() const;
 
